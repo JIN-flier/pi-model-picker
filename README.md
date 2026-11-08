@@ -1,6 +1,6 @@
-# Pi Auto Model Manager
+# Pi Model Picker extension
 
-> A model manager extension for Pi Agent.
+> A model picker extension for Pi Agent which provides a flexible and user-friendly way to manage model selection in Pi Agent.
 
 Features:
 
@@ -26,6 +26,10 @@ Create the extension directory:
 
 ```bash
 mkdir -p ~/.pi/agent/extensions/model-picker
+```
+
+```bash
+git clone --depth 1 https://github.com/JIN-flier/pi-model-picker.git ~/.pi/agent/extensions/model-picker
 ```
 
 create the config JSON file:
