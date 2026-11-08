@@ -3,19 +3,19 @@ import { homedir } from "node:os";
 import { join } from "node:path";
 
 import {
-  TIERS,
   THINKING_LEVELS,
   type AutoModelConfig,
   type ModelChoice,
   type PricingPeriod,
   type TierPlan,
 } from "./types.ts";
+import { console } from "node:inspector";
 
 // ============================================================
 // Configuration Path
 // ============================================================
 
-export const CONFIG_PATH = join(homedir(), ".pi", "agent", "auto-model.json");
+export const CONFIG_PATH = join(homedir(), ".pi", "agent", "model-picker.json");
 
 // ============================================================
 // Validation Helpers
@@ -101,9 +101,11 @@ function validateTierPlan(value: unknown, period: PricingPeriod): TierPlan {
 
   const result = {} as TierPlan;
 
-  for (const tier of TIERS) {
-    result[tier] = validateModelChoice(value[tier], `plans.${period}.${tier}`);
-  }
+  const tier_list: string[] = [];
+  Object.keys(value).forEach((key) => {
+    tier_list.push(key);
+    result[key] = validateModelChoice(value[key], `plans.${period}.${key}`);
+  });
 
   return result;
 }
@@ -166,7 +168,6 @@ export function validateConfig(value: unknown): AutoModelConfig {
 
   const plans: AutoModelConfig["plans"] = {
     peak: validateTierPlan(value.plans.peak, "peak"),
-
     offPeak: validateTierPlan(value.plans.offPeak, "offPeak"),
   };
 

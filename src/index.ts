@@ -3,7 +3,7 @@ import type {
   ExtensionContext,
 } from "@earendil-works/pi-coding-agent";
 
-import { TIERS, type AutoModelConfig, type Tier } from "./types.ts";
+import { type AutoModelConfig, type Tier } from "./types.ts";
 
 import { CONFIG_PATH, loadConfig } from "./config.ts";
 
@@ -84,7 +84,7 @@ export default async function (pi: ExtensionAPI) {
   // 7. Register Command
   // ==========================================================
 
-  pi.registerCommand("auto-model", {
+  pi.registerCommand("model-picker", {
     description: "Interactive model manager",
 
     handler: async (args, ctx) => {
@@ -100,10 +100,6 @@ export default async function (pi: ExtensionAPI) {
 
           config = newConfig;
           configError = undefined;
-
-          //   startStatusRefresh(ctx, pi, () => config);
-
-          //   updateStatus(ctx, pi, config);
 
           notify(ctx, "模型配置已重新加载", "info");
         } catch (error) {
@@ -126,7 +122,6 @@ export default async function (pi: ExtensionAPI) {
       // ------------------------------------------------------
 
       if (command === "status") {
-        // showModelStatus(ctx);
         if (!config) {
           notify(ctx, `配置不可用：${configError ?? CONFIG_PATH}`, "error");
 
@@ -178,7 +173,12 @@ export default async function (pi: ExtensionAPI) {
       // Direct Tier Selection
       // ------------------------------------------------------
 
-      const tier = TIERS.find((item) => item === command);
+      const tier_list: string[] = [];
+      Object.keys(config.plans.peak).forEach((key) => {
+        tier_list.push(key);
+      });
+
+      const tier = tier_list.find((item) => item === command);
 
       if (tier) {
         await switchModelForTier(tier as Tier, ctx, pi, config);
@@ -194,12 +194,10 @@ export default async function (pi: ExtensionAPI) {
         ctx,
         [
           "用法：",
-          "/auto-model",
-          "/auto-model low",
-          "/auto-model mid",
-          "/auto-model high",
-          "/auto-model reload",
-          "/auto-model status",
+          "/model-picker",
+          "/model-picker <your tier>",
+          "/model-picker reload",
+          "/model-picker status",
         ].join("\n"),
         "warning",
       );

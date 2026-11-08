@@ -4,9 +4,7 @@ import type { ExtensionContext } from "@earendil-works/pi-coding-agent";
 // Basic Types
 // ============================================================
 
-export const TIERS = ["low", "mid", "high"] as const;
-
-export type Tier = (typeof TIERS)[number];
+export type Tier = string[number];
 
 export type PricingPeriod = "peak" | "offPeak";
 
